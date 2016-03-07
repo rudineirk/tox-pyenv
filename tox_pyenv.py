@@ -85,6 +85,25 @@ def tox_get_python_executable(envconfig):
     if pipe.poll() == 0:
         return out.strip()
     else:
+        # ####################
+        known_versions = subprocess.check_output(
+            [pyenv, 'versions'],
+            universal_newlines=True
+            ).split()
+        import ntpath
+        desired_version = ntpath.basename(envconfig.basepython)
+        # or
+        desired_version = '.'.join(
+            [str(_v)
+             for _v in envconfig.python_info.version_info[0:3]]
+        )
+        # do shit with desired version
+        if desired_version in known_versions:
+            pass
+        # pyenv install desired_versions
+
+        # ####################
+
         if not envconfig.tox_pyenv_fallback:
             raise PyenvWhichFailed(err)
         LOG.debug("`%s` failed thru tox-pyenv plugin, falling back. "
